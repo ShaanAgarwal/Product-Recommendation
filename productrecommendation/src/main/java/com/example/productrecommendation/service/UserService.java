@@ -30,4 +30,10 @@ public class UserService {
         return Optional.of(userRepository.findAll());
     }
 
+    public User updateUser(Optional<User> userExists, User user) {
+        User existingUser = userExists.get();
+        existingUser.setName(user.getName());
+        return userRepository.save(existingUser);
+    }
+
 }

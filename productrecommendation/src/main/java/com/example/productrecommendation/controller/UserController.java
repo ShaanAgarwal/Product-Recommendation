@@ -87,4 +87,24 @@ public class UserController {
             throw new InternalServerErrorException("An unexpected error occurred while fetching all users.", exception);
         }
     }
+
+    @PutMapping("/updateUserById/{id}")
+    public ResponseEntity<?> updateUserById(@PathVariable("id") String id, @RequestBody User user) {
+        try {
+            Optional<User> userExists = userService.getUserById(id);
+            if (userExists.isEmpty()) {
+                throw new UserDoesNotExistException("User does not exist with the given id: " + id);
+            }
+            if (user.getName() == null || user.getName().trim().isEmpty()) {
+                throw new InsufficientCredentialsException("Updated name of user is required");
+            }
+            User updatedUser = userService.updateUser(userExists, user);
+            return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
+        } catch (UserDoesNotExistException | InsufficientCredentialsException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        } catch (Exception exception) {
+            throw new InternalServerErrorException("An unexpected error occurred while updating user", exception);
+        }
+    }
+
 }
