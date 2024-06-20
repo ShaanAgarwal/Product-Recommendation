@@ -61,4 +61,38 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/getSingleProductById/{id}")
+    public ResponseEntity<?> getSingleProductById(@PathVariable("id") String id) {
+        try {
+            Optional<Product> product = productService.getProductById(id);
+            if(product.isEmpty()) {
+                throw new ProductDoesNotExistException("Product does not exist with given id: "+id);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(product);
+        } catch (ProductDoesNotExistException exception) {
+            throw exception;
+        } catch (Exception exception) {
+            throw new InternalServerErrorException("An occurred while getting single product by id", exception);
+        }
+    }
+
+    @GetMapping("/getAllProductsByCategory/{id}")
+    public ResponseEntity<?> getAllProductsByCategory(@PathVariable("id") String id) {
+        try {
+            Optional<Category> category = categoryService.getCategoryById(id);
+            if(category.isEmpty()) {
+                throw new CategoryNotFoundException("Category does not exist.");
+            }
+            Optional<List<Product>> products = productService.getAllProductsByCategoryId(id);
+            if(products.get().isEmpty()) {
+                throw new ProductDoesNotExistException("There are no products in this category");
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(products);
+        } catch (CategoryNotFoundException | ProductDoesNotExistException exception) {
+            throw exception;
+        } catch (Exception exception) {
+            throw new InternalServerErrorException("An error occurred while getting all the products for the category.", exception);
+        }
+    }
+
 }

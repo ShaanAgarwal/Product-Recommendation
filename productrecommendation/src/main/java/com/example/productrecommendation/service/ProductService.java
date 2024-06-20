@@ -22,4 +22,12 @@ public class ProductService {
     public Optional<List<Product>> getAllProducts() {
         return Optional.of(productRepository.findAll());
     }
+
+    public Optional<Product> getProductById(String id) {
+        return productRepository.findById(id);
+    }
+
+    public Optional<List<Product>> getAllProductsByCategoryId(String id) {
+        return productRepository.findAllByCategoryId(id);
+    }
 }
