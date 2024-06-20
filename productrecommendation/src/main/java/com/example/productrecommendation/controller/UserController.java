@@ -101,7 +101,7 @@ public class UserController {
             User updatedUser = userService.updateUser(userExists, user);
             return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
         } catch (UserDoesNotExistException | InsufficientCredentialsException exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+            throw exception;
         } catch (Exception exception) {
             throw new InternalServerErrorException("An unexpected error occurred while updating user", exception);
         }
