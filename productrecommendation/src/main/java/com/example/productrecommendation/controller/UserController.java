@@ -47,7 +47,7 @@ public class UserController {
             }
             Optional<User> userExists = userService.getExistingUserByName(user.getName());
             if(userExists.isEmpty()) {
-                throw new UserDoesNotExistException("User does not exist with given name");
+                throw new UserDoesNotExistException("User does not exist with given name" + user.getName());
             }
             return ResponseEntity.status(HttpStatus.OK).body(userExists);
         } catch (InsufficientCredentialsException | UserDoesNotExistException exception) {
@@ -56,4 +56,20 @@ public class UserController {
             throw new InternalServerErrorException("An unexpected error occurred while performing login operation", exception);
         }
     }
+
+    @GetMapping("/getUserById/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable("id") String id) {
+        try {
+            Optional<User> userExists = userService.getUserById(id);
+            if(userExists.isEmpty()) {
+                throw new UserDoesNotExistException("User does not exist with given id" + id);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(userExists);
+        } catch(UserDoesNotExistException exception) {
+            throw exception;
+        } catch (Exception exception) {
+            throw new InternalServerErrorException("An unexpected error occurred while fetching the user by id", exception);
+        }
+    }
+
 }
