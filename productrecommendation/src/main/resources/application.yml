@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: productrecommendation
+  data:
+    mongodb:
+      uri: mongodb+srv://shaan:password2003$@cluster0.0gutviq.mongodb.net/productrecommendation?retryWrites=true&w=majority
+server:
+  port: 8080
