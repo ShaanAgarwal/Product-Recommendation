@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -72,4 +73,18 @@ public class UserController {
         }
     }
 
+    @GetMapping("/getAllUsers")
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            Optional<List<User>> users = userService.getAllUsers();
+            if(users.get().isEmpty()) {
+                throw new UserDoesNotExistException("No users are present inside the database");
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(users);
+        } catch (UserDoesNotExistException exception) {
+            throw exception;
+        } catch (Exception exception) {
+            throw new InternalServerErrorException("An unexpected error occurred while fetching all users.", exception);
+        }
+    }
 }
