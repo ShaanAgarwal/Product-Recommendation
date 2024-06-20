@@ -23,4 +23,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
+    @ExceptionHandler(UserDoesNotExistException.class)
+    public ResponseEntity<String> handleUserDoesNotExistException(UserDoesNotExistException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
+
 }
