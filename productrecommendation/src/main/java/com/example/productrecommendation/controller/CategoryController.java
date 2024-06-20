@@ -55,4 +55,19 @@ public class CategoryController {
         }
     }
 
+    @GetMapping("/getCategoryById/{id}")
+    public ResponseEntity<?> getCategoryById(@PathVariable("id") String id) {
+        try {
+            Optional<Category> categoryExists = categoryService.getCategoryById(id);
+            if(categoryExists.isEmpty()) {
+                throw new CategoryNotFoundException("Category does not exist with given id: "+id);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(categoryExists);
+        } catch (CategoryNotFoundException exception) {
+            throw exception;
+        } catch (Exception exception) {
+            throw new InternalServerErrorException("An error occurred while fetching a particular category by id", exception);
+        }
+    }
+
 }

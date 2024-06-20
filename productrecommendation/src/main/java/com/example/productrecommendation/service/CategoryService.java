@@ -26,4 +26,8 @@ public class CategoryService {
         return Optional.of(categoryRepository.findAll());
     }
 
+    public Optional<Category> getCategoryById(String id) {
+        return categoryRepository.findById(id);
+    }
+
 }
