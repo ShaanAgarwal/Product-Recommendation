@@ -1,6 +1,7 @@
 package com.example.productrecommendation.controller;
 
 import com.example.productrecommendation.exception.CategoryAlreadyExistsException;
+import com.example.productrecommendation.exception.CategoryNotFoundException;
 import com.example.productrecommendation.exception.InsufficientCredentialsException;
 import com.example.productrecommendation.exception.InternalServerErrorException;
 import com.example.productrecommendation.model.Category;
@@ -8,11 +9,9 @@ import com.example.productrecommendation.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -38,6 +37,21 @@ public class CategoryController {
             throw exception;
         } catch (Exception exception) {
             throw new InternalServerErrorException("An error occurred while creating a category.", exception);
+        }
+    }
+
+    @GetMapping("/getAllCategories")
+    public ResponseEntity<?> getAllCategories() {
+        try {
+            Optional<List<Category>> categories = categoryService.getAllCategories();
+            if(categories.get().isEmpty()) {
+                throw new CategoryNotFoundException("No categories exist in the database");
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(categories);
+        } catch (CategoryNotFoundException exception) {
+            throw exception;
+        } catch (Exception exception) {
+            throw new InternalServerErrorException("An error occurred while fetching all categories", exception);
         }
     }
 
