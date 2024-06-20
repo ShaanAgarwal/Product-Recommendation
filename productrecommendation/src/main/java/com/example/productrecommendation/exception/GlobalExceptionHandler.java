@@ -38,4 +38,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
+    @ExceptionHandler(ProductDoesNotExistException.class)
+    public ResponseEntity<String> handleProductDoesNotExistException(ProductDoesNotExistException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
+
 }

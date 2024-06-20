@@ -3,6 +3,7 @@ package com.example.productrecommendation.controller;
 import com.example.productrecommendation.exception.CategoryNotFoundException;
 import com.example.productrecommendation.exception.InsufficientCredentialsException;
 import com.example.productrecommendation.exception.InternalServerErrorException;
+import com.example.productrecommendation.exception.ProductDoesNotExistException;
 import com.example.productrecommendation.model.Category;
 import com.example.productrecommendation.model.Product;
 import com.example.productrecommendation.service.CategoryService;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -41,6 +43,21 @@ public class ProductController {
             throw exception;
         } catch (Exception exception) {
             throw new InternalServerErrorException("An error occurred while creating the product.", exception);
+        }
+    }
+
+    @GetMapping("/getAllProducts")
+    public ResponseEntity<?> getAllProducts() {
+        try {
+            Optional<List<Product>> products = productService.getAllProducts();
+            if(products.get().isEmpty()) {
+                throw new ProductDoesNotExistException("No products are present in the database");
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(products);
+        } catch (ProductDoesNotExistException exception) {
+            throw exception;
+        } catch (Exception exception) {
+            throw new InternalServerErrorException("An occurred while getting all products.", exception);
         }
     }
 
